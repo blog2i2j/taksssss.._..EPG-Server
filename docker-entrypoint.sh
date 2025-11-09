@@ -142,6 +142,8 @@ sed -i "s/memory_limit = .*/memory_limit = ${PHP_MEMORY_LIMIT}/" /etc/php83/php.
 sed -i "s#^;date.timezone =\$#date.timezone = \"${TZ}\"#" /etc/php83/php.ini
 sed -i "s/upload_max_filesize = .*/upload_max_filesize = 100M/" /etc/php83/php.ini
 sed -i "s/post_max_size = .*/post_max_size = 100M/" /etc/php83/php.ini
+sed -i 's/^user = .*/user = nginx/' /etc/php83/php-fpm.d/www.conf
+sed -i 's/^group = .*/group = nginx/' /etc/php83/php-fpm.d/www.conf
 
 # Modify system timezone
 if [ -e /etc/localtime ]; then rm -f /etc/localtime; fi
@@ -151,6 +153,9 @@ echo 'Running cron.php, php-fpm and nginx'
 
 # Change ownership of /htdocs
 chown -R nginx:nginx /htdocs
+
+# Change session directory permissions
+chmod 1733 /tmp
 
 # Start cron.php if exists
 if [ -f /htdocs/cron.php ]; then
